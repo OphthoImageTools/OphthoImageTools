@@ -1,0 +1,12 @@
+# OphthoImageTools funding configuration
+# After creating your Buy Me a Coffee account, replace the placeholder
+# below with your actual handle (e.g. "francescopichi") and commit.
+# This will activate the "Sponsor" button next to the repository name.
+
+buy_me_a_coffee: ophthoimagetools
+
+# Other supported platforms (uncomment and fill if desired):
+# github: [OphthoImageTools]
+# ko_fi: ophthoimagetools
+# patreon: ophthoimagetools
+# custom: ["https://your-donation-page.example.com"]
