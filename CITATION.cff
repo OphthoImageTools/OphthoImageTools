@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+title: "OphthoImageTools: ImageJ & MATLAB tools for ophthalmic imaging analysis"
+message: "If you use this software, please cite it using the metadata in this file and the companion editorial."
+type: software
+authors:
+  - family-names: "Pichi"
+    given-names: "Francesco"
+    orcid: "https://orcid.org/0000-0002-7357-4166"
+    affiliation: "University of Toronto, Department of Ophthalmology and Vision Science; Kensington Eye Institute, Toronto, Canada"
+  - family-names: "Carreño"
+    given-names: "Ester"
+    affiliation: "Department of Ophthalmology, Hospital Universitario La Paz, Madrid, Spain"
+repository-code: "https://github.com/OphthoImageTools/OphthoImageTools"
+url: "https://github.com/OphthoImageTools/OphthoImageTools"
+abstract: >
+  OphthoImageTools is an open collection of ImageJ/Fiji macros and MATLAB
+  scripts for objective, reproducible analysis of ophthalmic images, with a
+  focus on uveitis biomarkers: keratic precipitate volumetry on AS-OCT,
+  ultra-widefield fundus depigmentation in Vogt–Koyanagi–Harada disease,
+  macrophage-like cell density on en face OCT angiography, and automatic
+  ETDRS-grid sectoral counting.
+keywords:
+  - uveitis
+  - ophthalmology
+  - image-analysis
+  - ImageJ
+  - Fiji
+  - MATLAB
+  - OCT
+  - OCT-angiography
+  - macrophage-like-cells
+  - keratic-precipitates
+  - VKH
+  - ETDRS
+  - open-science
+license: MIT
+preferred-citation:
+  type: article
+  title: "From Proprietary Algorithms to Open Science: Rethinking Objectivity in Uveitis"
+  authors:
+    - family-names: "Pichi"
+      given-names: "Francesco"
+    - family-names: "Carreño"
+      given-names: "Ester"
+  journal: "American Journal of Ophthalmology"
+  year: 2026
