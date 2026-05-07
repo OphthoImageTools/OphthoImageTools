@@ -27,7 +27,7 @@ Depigmentation in VKH is most reproducibly tracked **outside** the macular pigme
 
 - **Threshold (`80, 255`)** &mdash; calibrated for full-resolution Optos color images. If you change the input modality (Spectralis UWF, Mirante, scaled-down JPEGs), re-validate the threshold against a few control images.
 - **6 shades LUT** &mdash; intentional binning that makes the threshold robust to small luminance differences across visits. Replace with another LUT if you want finer gradation.
-- **Ellipse axes** &mdash; default `100 &times; 50` px. Adjust to your image scale; use le same axes at follow-up to keep the ROI comparable.
+- **Ellipse axes** &mdash; default `100 &times; 50` px. Adjust to your image scale; use the same axes at follow-up to keep the ROI comparable.
 
 ## Tips for longitudinal use
 
@@ -37,4 +37,4 @@ Depigmentation in VKH is most reproducibly tracked **outside** the macular pigme
 
 ## Reference
 
-Pichi F, Belletti M, Neri P, Carre&ntilde;o E. *Quantitative Ultra-Widefield Imaging Measurement of Fundus Depigmentation in Vogt&ndash;Koyanagi&ndash;Harada Disease.* **Ocul Immunol Inflamm.** 2026;34(2):334&ndash;340.
+Pichi F, Belletti M, Neri P, Carre&ntilde;o E. *Quantitative Ultra-Widefield Imaging Measurement of Fundus Depigmentation in Vogt&ndash;Koyanagi&ndash;Harada Disease.* **Ocul Immunol Inflamm.** 2026;34(2):334&ndash;340. &mdash; [&#128462;&nbsp;Open PDF](Pichi_2026_OII_VKH.pdf) &middot; [DOI](https://doi.org/10.1080/09273948.2025.2608275)
