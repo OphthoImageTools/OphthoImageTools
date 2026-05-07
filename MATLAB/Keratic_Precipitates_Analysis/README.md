@@ -36,7 +36,7 @@ Each eye folder must contain **exactly one** `.xml` file (the script will refuse
 Outputs:
 - `cornea.mat` &mdash; segmented boundaries and en face projection.
 - `precipitatesVolume.mat` &mdash; `precVol` (mm&sup3;), `area` (mm&sup2;), `ratio_PrecVol_area` (mm).
-- A figure showing the elevation map (jet colormap, 0&ndash;0.14 mm) overlaid on the localizer con la scanned ROI outlined in green.
+- A figure showing the elevation map (jet colormap, 0&ndash;0.14 mm) overlaid on the localizer with the scanned ROI outlined in green.
 
 **Batch over a study cohort:**
 ```matlab
@@ -61,4 +61,4 @@ batchPlotCorneaPrecipitates('/path/to/ParentDir');
 
 ## Reference
 
-Pichi F, Ometto G, Invernizzi A, et&nbsp;al. *Automated quantification of uveitic keratic precipitates by use of anterior segment optical coherence tomography.* **Clin Exp Ophthalmol.** 2023;51(8):790&ndash;798.
+Pichi F, Ometto G, Invernizzi A, et&nbsp;al. *Automated quantification of uveitic keratic precipitates by use of anterior segment optical coherence tomography.* **Clin Exp Ophthalmol.** 2023;51(8):790&ndash;798. &mdash; [&#128462;&nbsp;Open PDF](Pichi_2023_CEO_KP.pdf) &middot; [DOI](https://doi.org/10.1111/ceo.14276)
