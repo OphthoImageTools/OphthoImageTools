@@ -1,0 +1,239 @@
+{
+  "name": "PubMed Monthly Digest (OphthoImageTools template)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 25 * *"
+            }
+          ]
+        }
+      },
+      "id": "node-trigger",
+      "name": "Every 25th of Month",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmode=json&retmax=100&datetype=pdat&mindate={{ $now.toFormat('yyyy/MM') }}/01&maxdate={{ $now.toFormat('yyyy/MM/dd') }}&term=(uveitis[tiab]+OR+%22anterior+uveitis%22[tiab]+OR+%22intermediate+uveitis%22[tiab]+OR+%22posterior+uveitis%22[tiab]+OR+panuveitis[tiab]+OR+%22intraocular+inflammation%22[tiab]+OR+scleritis[tiab]+OR+iridocyclitis[tiab]+OR+choroiditis[tiab]+OR+%22retinal+vasculitis%22[tiab]+OR+vitritis[tiab])+AND+(%22Ophthalmology%22[Journal]+OR+%22Am+J+Ophthalmol%22[Journal]+OR+%22Br+J+Ophthalmol%22[Journal]+OR+%22Eye+(Lond)%22[Journal]+OR+%22JAMA+Ophthalmol%22[Journal]+OR+%22Retina%22[Journal]+OR+%22Ophthalmol+Retina%22[Journal]+OR+%22Prog+Retin+Eye+Res%22[Journal]+OR+%22Surv+Ophthalmol%22[Journal]+OR+%22Asia+Pac+J+Ophthalmol+(Phila)%22[Journal]+OR+%22Invest+Ophthalmol+Vis+Sci%22[Journal]+OR+%22Curr+Opin+Ophthalmol%22[Journal]+OR+%22Acta+Ophthalmol%22[Journal]+OR+%22Clin+Exp+Ophthalmol%22[Journal]+OR+%22Ocul+Immunol+Inflamm%22[Journal]+OR+%22J+Ophthalmic+Inflamm+Infect%22[Journal])",
+        "options": {}
+      },
+      "id": "node-esearch",
+      "name": "PubMed Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        272,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const searchResult = $input.first().json;\nconst idList = searchResult.esearchresult?.idlist || [];\nif (idList.length === 0) {\n  return [{ json: { error: 'No articles found', pmids: '' } }];\n}\nreturn [{ json: { pmids: idList.join(','), count: idList.length } }];"
+      },
+      "id": "node-extract-pmids",
+      "name": "Extract PMIDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id={{ $json.pmids }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "node-efetch",
+      "name": "Fetch Article Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawText = $input.first().json.data || $input.first().json.body || '';\n\n// Parse PubMed XML\nconst articles = [];\nconst articleRegex = /<PubmedArticle>[\\s\\S]*?<\\/PubmedArticle>/g;\nlet match;\nwhile ((match = articleRegex.exec(rawText)) !== null) {\n  const xml = match[0];\n  const getTag = (tag) => { const m = xml.match(new RegExp('<' + tag + '[^>]*>([\\\\s\\\\S]*?)<\\/' + tag + '>')); return m ? m[1].trim() : ''; };\n  const title = getTag('ArticleTitle');\n  const abs = getTag('AbstractText');\n  const journal = getTag('Title');\n  const pmid = getTag('PMID');\n  const year = getTag('Year');\n  const month = getTag('Month');\n  const day = getTag('Day');\n  const authorNodes = xml.match(/<Author [\\s\\S]*?<\\/Author>/g) || [];\n  const authors = authorNodes.slice(0, 3).map(a => {\n    const ln = a.match(/<LastName>([^<]*)<\\/LastName>/);\n    const fn = a.match(/<ForeName>([^<]*)<\\/ForeName>/);\n    return (ln ? ln[1] : '') + ' ' + (fn ? fn[1][0] : '');\n  }).join(', ') + (authorNodes.length > 3 ? ' et al.' : '');\n  const pubDate = [year, month, day].filter(Boolean).join(' ');\n  articles.push({ title, authors, journal, pubDate, pmid, abstract: abs });\n}\n\n// Build prompt asking Claude to generate HTML directly\nlet prompt = 'You are an expert ophthalmologist. For each article below, write a concise clinical summary in English (2-3 sentences) based on the abstract.\\n';\nprompt += 'Reply ONLY with a valid JSON array, no markdown, no backticks, no additional text.\\n';\nprompt += 'Format: [{\"pmid\":\"...\", \"summary\":\"...\"}]\\n\\n';\n\nfor (const a of articles) {\n  prompt += 'PMID: ' + a.pmid + '\\n';\n  prompt += 'Titolo: ' + a.title + '\\n';\n  prompt += 'Abstract: ' + (a.abstract || 'Non disponibile') + '\\n\\n';\n}\n\nreturn [{ json: { articles, totalFound: articles.length, prompt } }];"
+      },
+      "id": "node-parse-xml",
+      "name": "Parse Articles",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "__REPLACE_ME_ANTHROPIC_API_KEY__"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"claude-sonnet-4-6\",\"max_tokens\":16000,\"messages\":[{\"role\":\"user\",\"content\":{{ JSON.stringify($json.prompt) }}}]}",
+        "options": {}
+      },
+      "id": "node-claude",
+      "name": "Claude Summarize",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1152,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const claudeRaw = $input.first().json;\nconst parseData = $('Parse Articles').first().json;\nconst articles = parseData.articles || [];\n\nlet ct = '';\ntry { ct = claudeRaw.content[0].text; } catch(e) {}\nif (!ct) try { ct = claudeRaw.data.content[0].text; } catch(e) {}\nif (!ct) ct = JSON.stringify(claudeRaw);\n\nlet sMap = {};\nconst i1 = ct.indexOf(String.fromCharCode(91));\nconst i2 = ct.lastIndexOf(String.fromCharCode(93));\nif (i1 >= 0 && i2 > i1) {\n  const jsonStr = ct.substring(i1, i2 + 1);\n  try {\n    const arr = JSON.parse(jsonStr);\n    for (const s of arr) {\n      if (s.pmid && s.summary) sMap[String(s.pmid)] = s.summary;\n    }\n  } catch(e) {}\n}\n\nconst now = new Date();\nconst monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];\nconst my = monthNames[now.getMonth()] + ' ' + now.getFullYear();\nconst sc = Object.keys(sMap).length;\n\nlet h = '<div style=\"font-family:Georgia,serif;max-width:700px;margin:0 auto;padding:20px\">';\nh += '<h1 style=\"color:#2c5282\">PubMed Monthly Digest</h1>';\nh += '<hr style=\"border:3px solid #2c5282;margin-bottom:20px\">';\nh += '<p style=\"color:#555;font-size:16px\">Uveitis & Scleritis \\u2014 ' + my + '</p>';\nh += '<p style=\"color:#555\">Found <strong>' + articles.length + '</strong> articles \\u2014 <strong>' + sc + '</strong> summaries</p>';\n\nfor (let i = 0; i < articles.length; i++) {\n  const a = articles[i];\n  const sm = sMap[String(a.pmid)] || '<em>Summary not available</em>';\n  h += '<div style=\"border-left:4px solid #2c5282;padding:15px 20px;margin:25px 0;background:#f7fafc\">';\n  h += '<h3 style=\"margin:0 0 8px\">' + (i+1) + '. ' + (a.title||'') + '</h3>';\n  h += '<p style=\"color:#2c5282;margin:0 0 5px\"><strong>' + (a.journal||'') + '</strong> | ' + (a.pubDate||'') + '</p>';\n  if (a.authors) h += '<p style=\"color:#888;font-size:13px;margin:0 0 10px\">' + a.authors + '</p>';\n  h += '<div style=\"background:#edf2f7;padding:12px;border-radius:6px;margin:10px 0\">' + sm + '</div>';\n  h += '<a href=\"https://pubmed.ncbi.nlm.nih.gov/' + a.pmid + '/\" style=\"color:#2c5282\">Read on PubMed \\u2192</a>';\n  h += '</div>';\n}\nh += '</div>';\nreturn [{ json: { emailSubject: 'PubMed Digest \\u2014 Uveitis & Scleritis \\u2014 ' + my, emailBody: h } }];"
+      },
+      "id": "node-format-email",
+      "name": "Format Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "__REPLACE_ME_EMAIL_RECIPIENT__",
+        "subject": "={{ $json.emailSubject }}",
+        "message": "={{ $json.emailBody }}",
+        "options": {}
+      },
+      "id": "node-gmail",
+      "name": "Send Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1584,
+        0
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "__REPLACE_ME_CREDENTIAL_ID__",
+          "name": "__REPLACE_ME_GMAIL_CREDENTIAL_NAME__"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "PubMed Search": {
+      "main": [
+        [
+          {
+            "node": "Extract PMIDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PMIDs": {
+      "main": [
+        [
+          {
+            "node": "Fetch Article Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Article Details": {
+      "main": [
+        [
+          {
+            "node": "Parse Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Articles": {
+      "main": [
+        [
+          {
+            "node": "Claude Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Summarize": {
+      "main": [
+        [
+          {
+            "node": "Format Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Email": {
+      "main": [
+        [
+          {
+            "node": "Send Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every 25th of Month": {
+      "main": [
+        [
+          {
+            "node": "PubMed Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
