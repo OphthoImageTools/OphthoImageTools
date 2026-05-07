@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Made with ImageJ](https://img.shields.io/badge/ImageJ-Fiji-orange)](https://imagej.net/software/fiji/)
 [![Made with MATLAB](https://img.shields.io/badge/MATLAB-R2020b%2B-red)](https://www.mathworks.com/)
-[![Buy Me A Coffee](https://img.shields.io/badge/donate-buymeacoffee-yellow.svg?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/ophthoimagetools)
+[![Buy Me A Coffee](https://img.shields.io/badge/donate-buymeacoffee-yellow.svg?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/OphthoImageTools)
 [![Editorial: AJO](https://img.shields.io/badge/editorial-AJO%202026-success)](#-citation)
 
 *A collaborative project by clinician-scientists in uveitis and retinal imaging.*<br>
@@ -113,9 +113,9 @@ When contributing, please:
 
 If these tools have been useful for your research, you can support continued development and validation here:
 
-<a href="https://www.buymeacoffee.com/ophthoimagetools" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50"></a>
+<a href="https://www.buymeacoffee.com/OphthoImageTools" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50"></a>
 
-> The Buy-Me-A-Coffee handle above is currently a placeholder &mdash; it will be activated shortly. Stars &#11088; on this repository are equally appreciated.
+> Stars &#11088; on this repository are equally appreciated.
 
 ---
 
