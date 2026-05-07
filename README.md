@@ -21,7 +21,7 @@
 
 For more than two decades, uveitis grading has relied on the SUN classification &mdash; a categorical, semi-quantitative system that was built to standardize communication, not to serve as a quantitative endpoint for modern clinical trials. Many groups have built sophisticated computational tools to fix this, but most have remained inside the labs that created them.
 
-**OphthoImageTools** is our attempt to do the opposite: collect simple, reproducible, openly-described image-analysis workflows that any center can download, run, criticize, and improve. The macros here turn descriptive features (keratic precipitates, fundus depigmentation, macrophage-like cells, ganglion-cell topography) into quantitative readouts using free, widely-available platforms (ImageJ/Fiji, MATLAB).
+**OphthoImageTools** is our attempt to do the opposite: collect simple, reproducible, openly-described image-analysis workflows that any center can download, run, criticize, and improve. The macros here turn descriptive features (keratic precipitates, fundus depigmentation, macrophage-like cells, ganglion-cell topography, FAZ and vascular density) into quantitative readouts using free, widely-available platforms (ImageJ/Fiji, MATLAB).
 
 The companion editorial in the *American Journal of Ophthalmology* explains the rationale in detail.
 
@@ -32,9 +32,10 @@ The companion editorial in the *American Journal of Ophthalmology* explains the 
 | Module | Platform | Purpose | Reference |
 |---|---|---|---|
 | [ETDRS Grid](Fiji-ImageJ/ETDRS_Grid) | ImageJ | Automatic 4-quadrant ETDRS-style overlay with particle counting per sector | Belletti 2025 |
-| [Macrophage-Like Cells (MLC)](Fiji-ImageJ/Macrophage_Like_Cells_Analysis) | ImageJ | Registration, FFT denoising, MLC segmentation and density heatmap on en face OCT&nbsp;A | Pichi 2024 |
+| [Macrophage-Like Cells (MLC)](Fiji-ImageJ/Macrophage_Like_Cells_Analysis) | ImageJ | One-click full pipeline: registration, DoG/FFT denoising, MLC segmentation, 9-region ETDRS grid, NND | Pichi 2024 |
 | [GCIPL 6-Sectors (Cirrus-like)](Fiji-ImageJ/GCIPL_Sectors_Cirrus) | ImageJ | Cirrus-style elliptical 6-sector overlay around the foveal center for GCIPL particle counts | Belletti 2025 |
-| [Fundus Depigmentation (VKH)](Fiji-ImageJ/Fundus_Depigmentation_Analysis) | ImageJ | Quantitative ultra-widefield measurement of fundus depigmentation in VKH | Pichi 2026 |
+| [Fundus Depigmentation (VKH)](Fiji-ImageJ/Fundus_Depigmentation_Analysis) | ImageJ | Quantitative ultra-widefield (Optos) measurement of fundus depigmentation in VKH | Pichi 2026 |
+| [OCTA Vascular Density &amp; FAZ](Fiji-ImageJ/OCTA_Vascular_Analysis) | ImageJ | Automatic FAZ segmentation (Level Sets) + perifoveal &amp; parafoveal vascular density on en face OCTA | &mdash; |
 | [Keratic Precipitates (KPs)](MATLAB/Keratic_Precipitates_Analysis) | MATLAB | AS-OCT segmentation, en face projection and volumetric quantification of KPs from Heidelberg XML exports | Pichi 2023 |
 | [PubMed n8n workflow](n8n_PubMed_Workflow) | n8n | Automated PubMed search &amp; digest pipeline (importable JSON, ready to customize) | &mdash; |
 
@@ -102,7 +103,7 @@ We welcome:
 - **Validation data** from independent centers &mdash; reach out via Issues or email.
 
 When contributing, please:
-- Keep paths relative or parameterized (no hard-coded local paths).
+- Keep paths relative o parameterized (no hard-coded local paths).
 - Add a short docstring at the top of each script (purpose, input, output, dependencies).
 - Update the relevant README.
 
