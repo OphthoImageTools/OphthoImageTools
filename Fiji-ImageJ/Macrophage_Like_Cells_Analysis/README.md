@@ -68,5 +68,5 @@ All input frames should be **500&times;500 px**, covering a **6&times;6 mm** mac
 
 ## References
 
-- Pichi F, Neri P, Aljneibi S, Hay S, Chaudhry H, Carre&ntilde;o E. *Vitreoretinal Interface Cells Correlate In Vivo With Uveitis Activity and Decrease With Anti-Inflammatory Treatment.* **Transl Vis Sci Technol.** 2024;13(5):15.
+- Pichi F, Neri P, Aljneibi S, Hay S, Chaudhry H, Carre&ntilde;o E. *Vitreoretinal Interface Cells Correlate In Vivo With Uveitis Activity and Decrease With Anti-Inflammatory Treatment.* **Transl Vis Sci Technol.** 2024;13(5):15. &mdash; [&#128462;&nbsp;Open PDF](Pichi_2024_TVST_MLC.pdf) &middot; [DOI](https://doi.org/10.1167/tvst.13.5.15)
 - Pichi F, Neri P, Aljeneibi S, et&nbsp;al. *In Vivo Visualization of Macrophage-Like Cells in Patients with Uveitis by Use of En Face Swept Source Optical Coherence Tomography.* **Ocul Immunol Inflamm.** 2024;32(8):1532&ndash;1538.
